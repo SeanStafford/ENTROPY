@@ -41,6 +41,7 @@ ENTROPY/
 │   │   ├── news_analysis/ # News processing
 │   │   ├── retrieval/     # RAG implementations
 │   │   └── generation/    # LLM response synthesis
+│   ├── prototype/       
 │   ├── evaluation/       
 │   └── utils/            
 ├── notebooks/
