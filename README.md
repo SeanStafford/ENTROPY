@@ -58,6 +58,8 @@ ENTROPY/
 │   └── utils/            
 ├── notebooks/
 └── outs/
+    ├── logs/
+    └── results/      
 ```
 
 ## Architecture

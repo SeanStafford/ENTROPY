@@ -6,7 +6,7 @@ from ingest_documents import SimpleDocumentStore
 from openai import OpenAI
 
 load_dotenv()
-PROTOTYPE_ROOT = os.getenv("PROJECT_ROOT") + "entropy/prototype/"
+PROTOTYPE_ROOT = os.getenv("PROTOTYPE_PATH")
 
 
 class RAGChat:

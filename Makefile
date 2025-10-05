@@ -23,6 +23,12 @@ install-dev:
 	pip install -e ".[dev,eval]"
 	@echo ">>> Development and evaluation dependencies installed"
 
+## Install all dependencies including local ML models
+.PHONY: install-all
+install-all:
+	pip install -e ".[dev,eval,local]"
+	@echo ">>> All dependencies including local ML models installed"
+
 #################################################################################
 # CODE HYGEINE COMMANDS                                                         #
 #################################################################################
