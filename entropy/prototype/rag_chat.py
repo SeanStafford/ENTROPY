@@ -38,15 +38,15 @@ class RAGChat:
 
         if any(word in query_lower for word in ["news", "article", "headlines", "happening"]):
             intents.append("news")
-        
+
         if any(
             word in query_lower for word in ["change", "gain", "loss", "performance", "history"]
         ):
             intents.append("history")
-        
+
         if any(word in query_lower for word in ["company", "sector", "industry", "business"]):
             intents.append("info")
-        
+
         return intents or ["news"]  # news is default
 
     def _extract_ticker(self, query):

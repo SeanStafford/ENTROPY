@@ -17,6 +17,12 @@ install:
 	pip install -e .
 	@echo ">>> Base dependencies installed."
 
+## Install development dependencies
+.PHONY: install-dev
+install-dev:
+	pip install -e ".[dev,eval]"
+	@echo ">>> Development and evaluation dependencies installed"
+
 #################################################################################
 # CODE HYGEINE COMMANDS                                                         #
 #################################################################################
