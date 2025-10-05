@@ -11,11 +11,11 @@ DATA_PATH = Path(os.getenv("DATA_PROCESSED_PATH"))
 LOGS_PATH = Path(os.getenv("LOGS_PATH"))
 
 class BM25DocumentStore:
-    def __init__(self, verbose=True):
+    def __init__(self): #, verbose: bool = True):
         self.bm25_index: Optional[BM25Okapi] = None
         self.documents: List[Dict[str, Any]] = []
         self.tokenized_corpus: List[List[str]] = []
-        self.verbose = verbose
+        # self.verbose = verbose
         logger.debug("Initialized empty BM25DocumentStore")
 
     def _tokenize(self, text: str) -> List[str]:
