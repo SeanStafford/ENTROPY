@@ -5,7 +5,7 @@ from datetime import date, timedelta
 from collections import defaultdict
 from loguru import logger
 
-from .models import NewsArticle
+from .data_structures import NewsArticle
 from .constants import SentimentLabel
 
 
