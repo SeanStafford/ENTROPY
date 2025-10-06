@@ -13,18 +13,20 @@ DATA_PATH = Path(os.getenv("DATA_PROCESSED_PATH"))
 
 
 class EmbeddingDocumentStore:
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
+    def __init__(self, model_name: str = "all-MiniLM-L6-v2", verbose: bool = False):
         self.model = SentenceTransformer(model_name)
         self.dimension = 384  # all-MiniLM-L6-v2 embedding size
         self.index = faiss.IndexFlatL2(self.dimension)
         self.documents: List[Dict[str, Any]] = []
+        self.verbose = verbose
         logger.debug(f"Initialized EmbeddingDocumentStore with model {model_name}")
 
     def add_documents(self, texts: List[str], metadata_list: List[Dict[str, Any]]) -> None:
         if len(texts) != len(metadata_list):
             raise ValueError(f"Length mismatch: {len(texts)} texts vs {len(metadata_list)} metadata")
 
-        logger.info(f"Adding {len(texts)} documents to embedding store")
+        if self.verbose:
+            logger.info(f"Adding {len(texts)} documents to embedding store")
 
         embeddings = self.model.encode(texts, show_progress_bar=False)
         self.index.add(np.array(embeddings).astype("float32"))

@@ -7,8 +7,9 @@ import yfinance as yf
 class YFinanceFetcher:
     """Fetch news articles and stock data from yfinance API."""
 
-    def __init__(self):
+    def __init__(self, verbose: bool = False):
         logger.debug("Initialized YFinanceFetcher")
+        self.verbose = verbose
 
     def fetch_news(self, tickers: List[str]) -> Tuple[List[str], List[Dict[str, Any]]]:
         """
@@ -30,7 +31,8 @@ class YFinanceFetcher:
         articles_by_link = {}
 
         for ticker_symbol in tickers:
-            logger.info(f"Fetching news for {ticker_symbol}")
+            if self.verbose:
+                logger.info(f"Fetching news for {ticker_symbol}")
 
             try:
                 ticker = yf.Ticker(ticker_symbol)

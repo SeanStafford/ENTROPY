@@ -11,11 +11,11 @@ DATA_PATH = Path(os.getenv("DATA_PROCESSED_PATH"))
 LOGS_PATH = Path(os.getenv("LOGS_PATH"))
 
 class BM25DocumentStore:
-    def __init__(self): #, verbose: bool = True):
+    def __init__(self, verbose: bool = False):
         self.bm25_index: Optional[BM25Okapi] = None
         self.documents: List[Dict[str, Any]] = []
         self.tokenized_corpus: List[List[str]] = []
-        # self.verbose = verbose
+        self.verbose = verbose
         logger.debug("Initialized empty BM25DocumentStore")
 
     def _tokenize(self, text: str) -> List[str]:
@@ -25,7 +25,8 @@ class BM25DocumentStore:
         if len(texts) != len(metadata_list):
             raise ValueError(f"Length mismatch: {len(texts)} texts vs {len(metadata_list)} metadata")
 
-        logger.info(f"Adding {len(texts)} documents to BM25 store")
+        if self.verbose:
+            logger.info(f"Adding {len(texts)} documents to BM25 store")
 
         new_tokenized = [self._tokenize(text) for text in texts]
         self.tokenized_corpus.extend(new_tokenized)
