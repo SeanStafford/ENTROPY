@@ -26,14 +26,19 @@
 ## Installation
 
 ```bash
-# Install base dependencies
+# 1. Create and activate virtual environment
+make venv
+source .venv/bin/activate
+
+# 2. Install dependencies (venv creation happens automatically if needed)
 make install
 
 # For development (includes testing and evaluation tools)
 make install-dev
-
 ```
 
+**Note**:
+> All `make install*` targets will automatically create the `.venv` directory if it doesn't exist, but you still need to activate it manually with `source .venv/bin/activate` before installation.
 
 ## Project Organization
 
@@ -57,6 +62,9 @@ ENTROPY/
 │   │   │   └── yfinance_fetcher.py
 │   │   └── generation/                   # LLM response synthesis
 │   ├── prototype/
+│   │   ├── ingest_documents.py
+│   │   ├── rag_chat.py
+│   │   └── simple_chat.py
 │   ├── evaluation/
 │   └── utils/            
 ├── notebooks/
@@ -85,5 +93,4 @@ make lint
 
 # Clean cache files
 make clean
-
 ```

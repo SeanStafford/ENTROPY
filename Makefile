@@ -11,21 +11,33 @@ PACKAGE_MANAGER = pip
 # INSTALLATION COMMANDS                                                         #
 #################################################################################
 
+## Create virtual environment (if it doesn't exist)
+.PHONY: venv
+venv:
+	@if [ ! -d ".venv" ]; then \
+		echo "Creating virtual environment..."; \
+		$(PYTHON_INTERPRETER) -m venv .venv; \
+		echo ">>> Virtual environment created at .venv"; \
+		echo ">>> Activate with: source .venv/bin/activate"; \
+	else \
+		echo ">>> Virtual environment already exists at .venv"; \
+	fi
+
 ## Install Python Dependencies
 .PHONY: install
-install:
+install: venv
 	pip install -e .
 	@echo ">>> Base dependencies installed."
 
 ## Install development dependencies
 .PHONY: install-dev
-install-dev:
+install-dev: venv
 	pip install -e ".[dev,eval]"
 	@echo ">>> Development and evaluation dependencies installed"
 
 ## Install all dependencies including local ML models
 .PHONY: install-all
-install-all:
+install-all: venv
 	pip install -e ".[dev,eval,local]"
 	@echo ">>> All dependencies including local ML models installed"
 
