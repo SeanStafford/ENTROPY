@@ -57,6 +57,15 @@ format:
 	@echo ">>> Code formatted"
 
 #################################################################################
+# UTILITY COMMANDS                                                              #
+#################################################################################
+
+## Show recently modified files (like tree + ls -ltr)
+.PHONY: recent
+recent:
+	@find . -type f -not -path '*/\.*' -not -path '*/__pycache__/*' -not -path '*/venv/*' -not -path '*/.venv/*' -printf '%T@ %p\n' | sort -n | tail -20 | perl -MTime::Piece -MTime::Seconds -nE 'chomp; ($$t, $$f) = split / /, $$_, 2; $$now = time; $$diff = $$now - int($$t); if ($$diff < 60) { $$ago = sprintf "%ds ago", $$diff } elsif ($$diff < 3600) { $$ago = sprintf "%dm ago", $$diff/60 } elsif ($$diff < 86400) { $$ago = sprintf "%dh ago", $$diff/3600 } else { $$ago = sprintf "%dd ago", $$diff/86400 } printf "%-12s %s\n", $$ago, $$f'
+
+#################################################################################
 # Self Documenting Boilerplate                                                  #
 #################################################################################
 

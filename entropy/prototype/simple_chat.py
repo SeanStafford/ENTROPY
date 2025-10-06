@@ -1,10 +1,13 @@
 import os
+import sys
 from pathlib import Path
 
 import torch
 from dotenv import load_dotenv
 from openai import OpenAI
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
+load_dotenv()
 
 
 class LocalLLM:
@@ -54,8 +57,6 @@ class LocalLLM:
 class APIChat:
     def __init__(self, model: str = "gpt-4o-mini"):
         env_path = Path(__file__).parent.parent.parent / ".env"
-        print("Looking for .env file at:", env_path)
-        load_dotenv(env_path)
 
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
@@ -102,8 +103,34 @@ def chat_loop(llm):
 
 
 def main():
-    llm = APIChat()
-    chat_loop(llm)
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="ENTROPY Prototype Chat - Simple LLM chatbot",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        )
+    parser.add_argument(
+        "--local",
+        action="store_true",
+        help="Use local TinyLlama model instead of OpenAI API (very slow on CPU)",
+    )
+
+    args = parser.parse_args()
+
+    try:
+        if args.local:
+            print("⚠️  WARNING: Local mode is very slow on CPU!")
+            llm = LocalLLM()
+        else:
+            llm = APIChat()
+
+        chat_loop(llm)
+
+    except KeyboardInterrupt:
+        print("\n\nExiting...")
+    except Exception as e:
+        print(f"\n\033[1;31mFatal error:\033[0m {e}")
+        raise
 
 
 if __name__ == "__main__":
