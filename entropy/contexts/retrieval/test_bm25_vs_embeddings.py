@@ -80,3 +80,78 @@ def compare_retrievers(query, bm25_store, embedding_store, k=3):
             score = result["score"]
             print(f"{i}. [{tickers}] {title} (score: {score:.2f})")
 
+
+def main():
+    print("\n" + "="*70)
+    print("BM25 vs Embeddings Retrieval Comparison")
+    print("="*70)
+
+    # Create test documents
+    texts, metadata = create_test_documents()
+    print(f"\nCreated {len(texts)} test documents")
+    print(f"Tickers: {', '.join(sorted(set(t for m in metadata for t in m['tickers'])))}\n")
+
+    # Initialize both stores
+    print("Initializing BM25 store...")
+    bm25_store = BM25DocumentStore()
+    bm25_store.add_documents(texts, metadata)
+
+    print("Initializing embedding store (this may take a moment)...")
+    embedding_store = SimpleDocumentStore(model_name="all-MiniLM-L6-v2")
+    embedding_store.add_documents(texts, metadata)
+
+    # Test queries that show BM25 advantages
+    print("\n" + "="*70)
+    print("TEST 1: Exact ticker symbol matching")
+    print("="*70)
+    print("Expected: BM25 should excel at exact ticker matches")
+
+    compare_retrievers("NVDA", bm25_store, embedding_store, k=3)
+    compare_retrievers("TSLA stock", bm25_store, embedding_store, k=3)
+
+    # Test queries that show embedding advantages
+    print("\n" + "="*70)
+    print("TEST 2: Semantic similarity")
+    print("="*70)
+    print("Expected: Embeddings should better understand semantic meaning")
+
+    compare_retrievers(
+        "What cloud providers are growing?", bm25_store, embedding_store, k=3
+    )
+    compare_retrievers(
+        "Companies with strong quarterly performance", bm25_store, embedding_store, k=3
+    )
+
+    # Test mixed queries
+    print("\n" + "="*70)
+    print("TEST 3: Mixed queries (lexical + semantic)")
+    print("="*70)
+
+    compare_retrievers("Apple product launches", bm25_store, embedding_store, k=3)
+    compare_retrievers("GPU for machine learning", bm25_store, embedding_store, k=3)
+
+    print("\n" + "="*70)
+    print("Key Insights:")
+    print("="*70)
+    print("""
+1. BM25 Strengths:
+   - Exact term matching (ticker symbols: NVDA, AAPL, TSLA)
+   - Keyword-based queries (specific company/product names)
+   - Fast, no model loading required
+
+2. Embedding Strengths:
+   - Semantic understanding (cloud providers, quarterly performance)
+   - Conceptual queries without exact keywords
+   - Better handling of synonyms and paraphrasing
+
+3. Conclusion:
+   - Hybrid approach combining both methods would be optimal
+   - Use BM25 for precision on exact terms
+   - Use embeddings for recall on semantic concepts
+    """)
+
+    print("="*70 + "\n")
+
+
+if __name__ == "__main__":
+    main()
