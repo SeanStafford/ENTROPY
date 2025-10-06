@@ -49,8 +49,9 @@ class EmbeddingDocumentStore:
 
         results = []
         for dist, idx in zip(distances[0], indices[0]):
-            if filter_ticker and self.documents[idx]["metadata"].get("ticker") != filter_ticker:
-                continue
+            if filter_ticker:
+                if filter_ticker not in self.documents[idx]["metadata"]["tickers"]:
+                    continue
             results.append({"document": self.documents[idx], "score": float(dist)})
             if len(results) == k:
                 break
@@ -65,7 +66,10 @@ class EmbeddingDocumentStore:
     def get_stats(self) -> Dict[str, Any]:
         stats = {"num_documents": len(self.documents)}
 
-        tickers = {doc["metadata"].get("ticker") for doc in self.documents if doc["metadata"].get("ticker")}
+        tickers = set()
+        for doc in self.documents:
+            tickers.update(doc["metadata"]["tickers"])
+
         stats["unique_tickers"] = len(tickers)
         stats["tickers"] = sorted(list(tickers))
 

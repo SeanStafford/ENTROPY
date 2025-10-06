@@ -57,7 +57,7 @@ class BM25DocumentStore:
             scored_docs = [
                 (score, idx)
                 for score, idx in scored_docs
-                if self.documents[idx]["metadata"].get("ticker") == filter_ticker
+                if filter_ticker in self.documents[idx]["metadata"]["tickers"]
             ]
 
         top_results = scored_docs[:k]
@@ -83,7 +83,10 @@ class BM25DocumentStore:
             ),
         }
 
-        tickers = {doc["metadata"].get("ticker") for doc in self.documents if doc["metadata"].get("ticker")}
+        tickers = set()
+        for doc in self.documents:
+            tickers.update(doc["metadata"]["tickers"])
+
         stats["unique_tickers"] = len(tickers)
         stats["tickers"] = sorted(list(tickers))
 

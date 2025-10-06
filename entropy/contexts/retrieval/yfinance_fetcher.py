@@ -14,17 +14,20 @@ class YFinanceFetcher:
         """
         Fetch news articles for given ticker symbols.
 
+        Deduplicates articles that appear for multiple tickers and stores
+        all related tickers in metadata.
+
         Args:
             tickers: List of ticker symbols (e.g., ["AAPL", "TSLA"])
 
         Returns:
             Tuple of (texts, metadata_list) where:
-            - texts: List of formatted article strings
-            - metadata_list: List of metadata dicts with ticker, title, publisher, link, published
+            - texts: List of formatted article strings (deduplicated)
+            - metadata_list: List of metadata dicts with tickers (list), title, publisher, link, published
 
         """
-        all_texts = []
-        all_metadata = []
+        # Use dict to deduplicate by article link
+        articles_by_link = {}
 
         for ticker_symbol in tickers:
             logger.info(f"Fetching news for {ticker_symbol}")
@@ -41,20 +44,30 @@ class YFinanceFetcher:
                     article = entry.get("content", {})
                     title = article.get("title", "")
                     summary = article.get("summary", "")
+                    link = article.get("canonicalUrl", {}).get("url", "")
+
+                    # Use link as unique key (or title if no link)
+                    article_key = link if link else title
 
                     # Format as text for indexing
                     text = f"{title}\n\n{summary}"
 
-                    metadata = {
-                        "ticker": ticker_symbol,
-                        "title": title,
-                        "publisher": article.get("provider", {}).get("displayName", "Unknown"),
-                        "link": article.get("canonicalUrl", {}).get("url", ""),
-                        "published": entry.get("providerPublishTime", 0),
-                    }
-
-                    all_texts.append(text)
-                    all_metadata.append(metadata)
+                    if article_key in articles_by_link:
+                        # Article already seen - add ticker to existing entry
+                        if ticker_symbol not in articles_by_link[article_key]["metadata"]["tickers"]:
+                            articles_by_link[article_key]["metadata"]["tickers"].append(ticker_symbol)
+                    else:
+                        # New article
+                        articles_by_link[article_key] = {
+                            "text": text,
+                            "metadata": {
+                                "tickers": [ticker_symbol],  # List of tickers
+                                "title": title,
+                                "publisher": article.get("provider", {}).get("displayName", "Unknown"),
+                                "link": link,
+                                "published": entry.get("providerPublishTime", 0),
+                            }
+                        }
 
                 logger.info(f"Fetched {len(news)} articles for {ticker_symbol}")
 
@@ -62,7 +75,11 @@ class YFinanceFetcher:
                 logger.error(f"Error fetching news for {ticker_symbol}: {e}")
                 continue
 
-        logger.info(f"Total articles fetched: {len(all_texts)}")
+        # Convert dict to lists
+        all_texts = [item["text"] for item in articles_by_link.values()]
+        all_metadata = [item["metadata"] for item in articles_by_link.values()]
+
+        logger.info(f"Total unique articles fetched: {len(all_texts)}")
         return all_texts, all_metadata
 
     def fetch_stock_info(self, tickers: List[str]) -> Dict[str, Dict[str, Any]]:
