@@ -28,7 +28,13 @@ class BM25DocumentStore:
         if self.verbose:
             logger.info(f"Adding {len(texts)} documents to BM25 store")
 
-        new_tokenized = [self._tokenize(text) for text in texts]
+        # Prepend tickers to text for better BM25 matching on ticker symbols
+        augmented_texts = []
+        for text, metadata in zip(texts, metadata_list):
+            ticker_prefix = " ".join(metadata["tickers"]) + " "
+            augmented_texts.append(ticker_prefix + text)
+
+        new_tokenized = [self._tokenize(text) for text in augmented_texts]
         self.tokenized_corpus.extend(new_tokenized)
 
         for text, metadata in zip(texts, metadata_list):
