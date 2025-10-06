@@ -49,12 +49,13 @@ ENTROPY/
 │   └── processed/         
 ├── entropy/
 │   ├── contexts/
-│   │   ├── market_data/   # Stock prices and signals
-│   │   ├── news_analysis/ # News processing
-│   │   ├── retrieval/     # RAG implementations
+│   │   ├── market_data/                  # Stock prices and signals
+│   │   ├── news_analysis/                # News processing
+│   │   ├── retrieval/                    # RAG implementations
 │   │   │   ├── bm25_retrieval.py
+│   │   │   ├── embedding_retrieval.py
 │   │   │   └── yfinance_fetcher.py
-│   │   └── generation/    # LLM response synthesis
+│   │   └── generation/                   # LLM response synthesis
 │   ├── prototype/
 │   ├── evaluation/
 │   └── utils/            
