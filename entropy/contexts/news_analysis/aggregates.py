@@ -77,7 +77,8 @@ class TickerNewsTimeline:
             return {"article_count": 0}
         dates = [a.publish_date.date() for a in self.articles]
         earliest, latest = min(dates), max(dates)
-        days_span = (latest - earliest).days
+        # +1 because both endpoints are inclusive (math is hard sometimes)
+        days_span = (latest - earliest).days + 1
 
         with_sentiment = [a for a in self.articles if a.has_sentiment()]
         if with_sentiment:
