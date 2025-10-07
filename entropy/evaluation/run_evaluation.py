@@ -14,11 +14,11 @@ from entropy.contexts.retrieval.bm25_retrieval import BM25DocumentStore
 from entropy.contexts.retrieval.embedding_retrieval import EmbeddingDocumentStore
 from entropy.evaluation.test_queries import get_test_suite, get_relevance_judgment, get_category_names
 from entropy.evaluation.metrics import calculate_all_metrics, aggregate_metrics
+from entropy.utils.logging import configure_logging
 
 load_dotenv()
 DATA_PATH = Path(os.getenv("DATA_PROCESSED_PATH"))
 OUTS_PATH = Path(os.getenv("PROJECT_ROOT")) / "outs" / "evaluation"
-LOGS_PATH = Path(os.getenv("LOGS_PATH"))
 
 
 def evaluate_retriever(retriever, retriever_name: str, test_queries: List[Dict[str, Any]], k: int = 10) -> Dict[str, Any]:
@@ -88,14 +88,7 @@ def compare_by_category(bm25_results: Dict[str, Any], embedding_results: Dict[st
 
 def main():
     """Run BM25 vs Embeddings evaluation."""
-    run_id = os.getenv("RUN_ID", datetime.now().strftime("%Y%m%d_%H%M%S"))
-    run_dir = LOGS_PATH / run_id
-    run_dir.mkdir(parents=True, exist_ok=True)
-    log_file = run_dir / "evaluation.log"
-
-    logger.remove()
-    logger.add(sys.stderr, level="INFO", format="<level>{level: <8}</level> | <level>{message}</level>")
-    logger.add(log_file, level="DEBUG", format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}")
+    configure_logging("evaluation", console_level="INFO")
 
     logger.info("="*70)
     logger.info("BM25 vs Embeddings Evaluation")

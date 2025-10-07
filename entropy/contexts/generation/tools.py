@@ -4,6 +4,9 @@ import os
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from loguru import logger
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from entropy.contexts.market_data.tools import (
     get_current_price, get_stock_fundamentals, get_price_history, calculate_price_change,
@@ -150,8 +153,7 @@ class DocumentationTools:
     def get_documentation(section: Optional[str] = None) -> str:
         """Retrieve ENTROPY documentation."""
         try:
-            current_file = Path(__file__)
-            project_root = current_file.parent.parent.parent.parent
+            project_root = Path(os.getenv("PROJECT_ROOT"))
             readme_path = project_root / "README.md"
 
             if not readme_path.exists():

@@ -10,11 +10,11 @@ from loguru import logger
 from entropy.contexts.retrieval.yfinance_fetcher import YFinanceFetcher
 from entropy.contexts.retrieval.bm25_retrieval import BM25DocumentStore
 from entropy.contexts.retrieval.embedding_retrieval import EmbeddingDocumentStore
+from entropy.utils.logging import configure_logging
 
 load_dotenv()
 PROJECT_ROOT = Path(os.getenv("PROJECT_ROOT"))
 DATA_PATH = Path(os.getenv("DATA_PROCESSED_PATH"))
-LOGS_PATH = Path(os.getenv("LOGS_PATH"))
 
 TICKERS_20 = [
     "AAPL", "MSFT", "GOOGL", "NVDA", "META", "AMZN",  # Tech
@@ -29,18 +29,10 @@ TICKERS_20 = [
 def main():
     """Fetch and index 20 stocks for evaluation."""
 
-    # Configure run-specific logging
-    run_id = os.getenv("RUN_ID", datetime.now().strftime("%Y%m%d_%H%M%S"))
-    run_dir = LOGS_PATH / run_id
-    run_dir.mkdir(parents=True, exist_ok=True)
-
-    log_file = run_dir / "ingest_20_stocks.log"
-
-    logger.remove()
+    # Configure logging with custom UPDATE level
     ABC = "UPDATE"
     logger.level(ABC, no=21)
-    logger.add(sys.stderr, level=ABC, format="<level>{level: <8}</level> | <level>{message}</level>")
-    logger.add(log_file, level="DEBUG")
+    log_file = configure_logging("ingest_20_stocks", console_level=ABC)
 
     print(f"\nLogs will be saved to: {log_file.relative_to(PROJECT_ROOT)}\n")
 
