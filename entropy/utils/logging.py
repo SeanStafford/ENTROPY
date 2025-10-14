@@ -5,7 +5,7 @@ from loguru import logger
 
 def set_run_dir():
     run_id = os.getenv("RUN_ID", datetime.now().strftime("%Y%m%d_%H%M%S"))
-    run_dir = Path(os.getenv("LOG_DIR")) / run_id
+    run_dir = Path(os.getenv("LOGS_PATH")) / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     return run_id, run_dir
 
