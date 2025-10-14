@@ -72,6 +72,31 @@ curl -X POST http://localhost:8000/chat \
   }'
 ```
 
+### Running the Terminal Chat
+
+Interactive terminal interface with Rich formatting and command history:
+
+```bash
+# Using the convenience script
+./scripts/chat.sh
+
+# Or directly with Python
+python -m entropy.cli.chat
+```
+
+**Available commands:**
+- `/help` - Show commands and example queries
+- `/quit` or `/exit` - Exit chat
+- `/clear` - Clear conversation history (new session)
+- `/cost` - Show total cost for current session
+- `/session` - Show session information
+
+**Features:**
+- Command history with arrow keys (saved to `~/.entropy_history`)
+- Rich formatting with syntax highlighting
+- Real-time loading animation with elapsed time
+- Cost tracking per query and session total
+- Agent attribution (shows which agent answered)
 
 
 ## Technical Highlights

@@ -72,6 +72,11 @@ format:
 # UTILITY COMMANDS                                                              #
 #################################################################################
 
+## Run interactive terminal chat
+.PHONY: chat
+chat:
+	@./scripts/chat.sh
+
 ## Show recently modified files (like tree + ls -ltr)
 .PHONY: recent
 recent:
